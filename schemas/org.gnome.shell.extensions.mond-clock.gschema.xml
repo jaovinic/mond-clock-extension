@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
   <schema id="org.gnome.shell.extensions.mond-clock" path="/org/gnome/shell/extensions/mond-clock/">
+    <!-- Posição e Escala -->
     <key name="pos-x" type="d">
       <default>100.0</default>
       <summary>Posição horizontal (X)</summary>
@@ -16,20 +17,105 @@
       <summary>Escala do Widget</summary>
       <description>Fator de escala proporcional (zoom)</description>
     </key>
+    <key name="lock-position" type="b">
+      <default>false</default>
+      <summary>Travar posição</summary>
+      <description>Impede que o widget seja arrastado com o mouse</description>
+    </key>
+
+    <!-- Formato do Horário e Exibição -->
     <key name="clock-24h" type="b">
       <default>true</default>
       <summary>Formato 24 horas</summary>
       <description>Se verdadeiro, usa formato 24h (- HH:MM -), caso contrário 12h (- HH:MM AM/PM -)</description>
     </key>
+    <key name="remove-accents-day" type="b">
+      <default>true</default>
+      <summary>Normalizar caracteres especiais do Dia</summary>
+      <description>Remove acentos do dia da semana (ex: SABADO) para perfeita renderização na fonte Anurati</description>
+    </key>
+    <key name="day-uppercase" type="b">
+      <default>true</default>
+      <summary>Dia da semana em maiúsculas</summary>
+      <description>Exibe o dia da semana em letras maiúsculas</description>
+    </key>
+    <key name="date-uppercase" type="b">
+      <default>true</default>
+      <summary>Data em maiúsculas</summary>
+      <description>Exibe a data em letras maiúsculas</description>
+    </key>
+
+    <!-- Tamanhos das Fontes (em pontos pt) -->
+    <key name="font-size-day" type="d">
+      <default>52.0</default>
+      <summary>Tamanho da fonte do dia</summary>
+      <description>Tamanho da fonte do dia da semana em pontos (pt)</description>
+    </key>
+    <key name="font-size-date" type="d">
+      <default>20.0</default>
+      <summary>Tamanho da fonte da data</summary>
+      <description>Tamanho da fonte da data em pontos (pt)</description>
+    </key>
+    <key name="font-size-time" type="d">
+      <default>14.0</default>
+      <summary>Tamanho da fonte da hora</summary>
+      <description>Tamanho da fonte do horário em pontos (pt)</description>
+    </key>
+
+    <!-- Cores -->
     <key name="text-color" type="s">
       <default>"#ffffff"</default>
-      <summary>Cor do texto</summary>
-      <description>Cor em hexadecimal do texto</description>
+      <summary>Cor principal do texto</summary>
+      <description>Cor padrão do texto em formato hexadecimal ou rgba</description>
     </key>
-    <key name="lock-position" type="b">
-      <default>false</default>
-      <summary>Travar posição</summary>
-      <description>Impede que o widget seja arrastado acidentalmente</description>
+    <key name="color-day" type="s">
+      <default>"#ffffff"</default>
+      <summary>Cor do dia da semana</summary>
+      <description>Cor do dia da semana em formato hexadecimal ou rgba</description>
+    </key>
+    <key name="color-date" type="s">
+      <default>"#ffffff"</default>
+      <summary>Cor da data</summary>
+      <description>Cor da data em formato hexadecimal ou rgba</description>
+    </key>
+    <key name="color-time" type="s">
+      <default>"#ffffff"</default>
+      <summary>Cor do horário</summary>
+      <description>Cor do horário em formato hexadecimal ou rgba</description>
+    </key>
+
+    <!-- Sombra do Texto -->
+    <key name="shadow-enabled" type="b">
+      <default>true</default>
+      <summary>Habilitar sombra de texto</summary>
+      <description>Exibe sombra nos textos para contraste com qualquer papel de parede</description>
+    </key>
+    <key name="shadow-color" type="s">
+      <default>"rgba(0, 0, 0, 0.75)"</default>
+      <summary>Cor da sombra</summary>
+      <description>Cor e transparência da sombra em formato hexadecimal ou rgba</description>
+    </key>
+    <key name="shadow-blur" type="d">
+      <default>6.0</default>
+      <summary>Desfoque da sombra</summary>
+      <description>Raio de desfoque (blur) da sombra em pixels</description>
+    </key>
+    <key name="shadow-x" type="d">
+      <default>0.0</default>
+      <summary>Deslocamento horizontal da sombra</summary>
+      <description>Deslocamento horizontal (offset X) da sombra em pixels</description>
+    </key>
+    <key name="shadow-y" type="d">
+      <default>2.0</default>
+      <summary>Deslocamento vertical da sombra</summary>
+      <description>Deslocamento vertical (offset Y) da sombra em pixels</description>
+    </key>
+
+    <!-- Espaçamento -->
+    <key name="widget-spacing" type="d">
+      <default>4.0</default>
+      <summary>Espaçamento vertical</summary>
+      <description>Espaçamento vertical entre dia, data e hora em pixels</description>
     </key>
   </schema>
 </schemalist>
