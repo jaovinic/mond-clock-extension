@@ -2,6 +2,8 @@
 
 Widget de desktop idêntico à clássica skin **Mond** do Rainmeter, portado para o **GNOME Shell 48 no Debian 13 (Trixie)** com suporte a **Wayland** e **X11**.
 
+![Amostra Visual do Widget](assets/exemplo.png)
+
 ## Recursos
 
 - **Tipografia Fiel ao Mond Original**: Fonte futurista Anurati para o dia da semana e Quicksand para data e hora.
