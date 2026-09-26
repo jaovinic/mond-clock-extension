@@ -1,0 +1,11 @@
+{
+  "name": "Mond Clock Desktop Widget",
+  "description": "Widget de data e hora minimalista idêntico à skin Mond do Rainmeter, com fontes Anurati e Quicksand, drag-and-drop e zoom via scroll.",
+  "uuid": "mond-clock@local",
+  "shell-version": [
+    "48"
+  ],
+  "settings-schema": "org.gnome.shell.extensions.mond-clock",
+  "gettext-domain": "mond-clock",
+  "url": "https://github.com/local/mond-clock"
+}

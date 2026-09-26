@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.mond-clock" path="/org/gnome/shell/extensions/mond-clock/">
+    <key name="pos-x" type="d">
+      <default>100.0</default>
+      <summary>Posição horizontal (X)</summary>
+      <description>Coordenada X do widget no desktop</description>
+    </key>
+    <key name="pos-y" type="d">
+      <default>150.0</default>
+      <summary>Posição vertical (Y)</summary>
+      <description>Coordenada Y do widget no desktop</description>
+    </key>
+    <key name="scale" type="d">
+      <default>1.0</default>
+      <summary>Escala do Widget</summary>
+      <description>Fator de escala proporcional (zoom)</description>
+    </key>
+    <key name="clock-24h" type="b">
+      <default>true</default>
+      <summary>Formato 24 horas</summary>
+      <description>Se verdadeiro, usa formato 24h (- HH:MM -), caso contrário 12h (- HH:MM AM/PM -)</description>
+    </key>
+    <key name="text-color" type="s">
+      <default>"#ffffff"</default>
+      <summary>Cor do texto</summary>
+      <description>Cor em hexadecimal do texto</description>
+    </key>
+    <key name="lock-position" type="b">
+      <default>false</default>
+      <summary>Travar posição</summary>
+      <description>Impede que o widget seja arrastado acidentalmente</description>
+    </key>
+  </schema>
+</schemalist>
