@@ -7,5 +7,5 @@
   ],
   "settings-schema": "org.gnome.shell.extensions.mond-clock",
   "gettext-domain": "mond-clock",
-  "url": "https://github.com/local/mond-clock"
+  "url": "https://github.com/jaovinic/mond-clock-extension"
 }
