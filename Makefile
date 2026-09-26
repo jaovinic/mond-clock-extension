@@ -1,4 +1,4 @@
-UUID = mond-clock@local
+UUID = mond-clock@jaovinic
 TARGET_DIR = $(HOME)/.local/share/gnome-shell/extensions/$(UUID)
 
 .PHONY: all build install uninstall clean

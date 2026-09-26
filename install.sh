@@ -13,7 +13,7 @@ YELLOW="\033[1;33m"
 RED="\033[1;31m"
 RESET="\033[0m"
 
-UUID="mond-clock@local"
+UUID="mond-clock@jaovinic"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TARGET_DIR="$HOME/.local/share/gnome-shell/extensions/$UUID"
 USER_FONTS_DIR="$HOME/.local/share/fonts/mond-clock"

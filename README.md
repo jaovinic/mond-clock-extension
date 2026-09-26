@@ -42,14 +42,14 @@ chmod +x install.sh
 _(ou `make install`)_
 
 O instalador verifica as fontes no sistema; se não estiverem instaladas, instala automaticamente a partir da pasta `fonts/` para `~/.local/share/fonts/mond-clock/`.
-Em seguida, compila os schemas e registra a extensão em `~/.local/share/gnome-shell/extensions/mond-clock@local`.
+Em seguida, compila os schemas e registra a extensão em `~/.local/share/gnome-shell/extensions/mond-clock@jaovinic`.
 
 ## Abrir Configurações
 
 - Dê um **duplo clique** sobre o widget na área de trabalho, ou
 - Execute no terminal:
   ```bash
-  gnome-extensions prefs mond-clock@local
+  gnome-extensions prefs mond-clock@jaovinic
   ```
 
 ## Como Desinstalar

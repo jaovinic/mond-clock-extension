@@ -1,7 +1,7 @@
 {
   "name": "Mond Clock Desktop Widget",
   "description": "Widget de data e hora minimalista idêntico à skin Mond do Rainmeter, com fontes Anurati e Quicksand, drag-and-drop e zoom via scroll.",
-  "uuid": "mond-clock@local",
+  "uuid": "mond-clock@jaovinic",
   "shell-version": [
     "48"
   ],

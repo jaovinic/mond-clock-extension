@@ -10,7 +10,7 @@ GREEN="\033[1;32m"
 YELLOW="\033[1;33m"
 RESET="\033[0m"
 
-UUID="mond-clock@local"
+UUID="mond-clock@jaovinic"
 TARGET_DIR="$HOME/.local/share/gnome-shell/extensions/$UUID"
 USER_FONTS_DIR="$HOME/.local/share/fonts/mond-clock"
 
