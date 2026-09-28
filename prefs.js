@@ -278,7 +278,7 @@ export default class MondClockPreferences extends ExtensionPreferences {
         // Grupo: Posição e Zoom
         const groupPosition = new Adw.PreferencesGroup({
             title: _('Posição e Interatividade'),
-            description: _('Controle de arraste do mouse e escala do widget'),
+            description: _('Posição manual, controle de arraste do mouse e escala do widget'),
         });
         pageBehavior.add(groupPosition);
 
@@ -289,6 +289,38 @@ export default class MondClockPreferences extends ExtensionPreferences {
         });
         settings.bind('lock-position', rowLock, 'active', Gio.SettingsBindFlags.DEFAULT);
         groupPosition.add(rowLock);
+
+        // Posição Horizontal (X)
+        const rowPosX = new Adw.SpinRow({
+            title: _('Posição Horizontal (X)'),
+            subtitle: _('Distância em pixels a partir da borda esquerda da tela'),
+            adjustment: new Gtk.Adjustment({
+                lower: 0.0,
+                upper: 10000.0,
+                step_increment: 1.0,
+                page_increment: 10.0,
+                value: settings.get_double('pos-x'),
+            }),
+            digits: 0,
+        });
+        settings.bind('pos-x', rowPosX.adjustment, 'value', Gio.SettingsBindFlags.DEFAULT);
+        groupPosition.add(rowPosX);
+
+        // Posição Vertical (Y)
+        const rowPosY = new Adw.SpinRow({
+            title: _('Posição Vertical (Y)'),
+            subtitle: _('Distância em pixels a partir da borda superior da tela'),
+            adjustment: new Gtk.Adjustment({
+                lower: 0.0,
+                upper: 10000.0,
+                step_increment: 1.0,
+                page_increment: 10.0,
+                value: settings.get_double('pos-y'),
+            }),
+            digits: 0,
+        });
+        settings.bind('pos-y', rowPosY.adjustment, 'value', Gio.SettingsBindFlags.DEFAULT);
+        groupPosition.add(rowPosY);
 
         // Escala (Zoom)
         const rowScale = new Adw.SpinRow({

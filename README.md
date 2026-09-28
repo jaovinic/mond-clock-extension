@@ -11,11 +11,13 @@ Widget de desktop idêntico à clássica skin **Mond** do Rainmeter, portado par
 - **Sem Truncamento**: Textos sempre exibidos por completo, sem cortes com elipses (`...`).
 - **Arrasto Suave (Drag-and-Drop)**: Clique e arraste o widget para qualquer lugar da tela (com cursor dinâmico e captura contínua via `Clutter Grab`).
 - **Zoom via Scroll**: Role a roda do mouse sobre o widget para aumentar ou diminuir a escala em tempo real.
+- **Atualização Eficiente**: O relógio usa o `GnomeDesktop.WallClock` (o mesmo do painel do GNOME), atualizando apenas na virada do minuto e automaticamente após suspensão ou mudança de fuso horário.
 - **Painel de Preferências Completo (Libadwaita)**:
   - **Tamanhos de Fontes**: Ajuste individual do tamanho do Dia, Data e Hora (em pt).
   - **Cores Personalizadas**: Seletor de cores nativo GTK4 com canal alfa para cada elemento.
   - **Sombra de Texto (Text Shadow)**: Controle de cor, opacidade, raio de desfoque (blur) e deslocamentos horizontal/vertical.
   - **Layout & Espaçamento**: Espaçamento vertical entre linhas, formato 24h/12h e alternância de maiúsculas.
+  - **Posição Manual**: Defina as coordenadas X/Y do widget em pixels diretamente nas configurações (sincronizadas em tempo real com o arraste).
   - **Travar Posição**: Opção de bloquear arraste acidental e botão para redefinir coordenadas padrão.
 
 ## Estrutura do Projeto

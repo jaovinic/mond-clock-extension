@@ -1,15 +1,12 @@
 import Clutter from "gi://Clutter";
 import GLib from "gi://GLib";
-import GObject from "gi://GObject";
+import GnomeDesktop from "gi://GnomeDesktop";
 import Meta from "gi://Meta";
 import Pango from "gi://Pango";
 import St from "gi://St";
 
 import * as Main from "resource:///org/gnome/shell/ui/main.js";
-import {
-  Extension,
-  gettext as _,
-} from "resource:///org/gnome/shell/extensions/extension.js";
+import { Extension } from "resource:///org/gnome/shell/extensions/extension.js";
 
 export default class MondClockExtension extends Extension {
   enable() {
@@ -149,10 +146,11 @@ export default class MondClockExtension extends Extension {
     this._applyStyles();
     this._updateClock();
 
-    // 7. Agendamento do timer de 1 segundo
-    this._timerId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, () => {
+    // 7. Relógio de parede do GNOME: notifica a cada virada de minuto e também
+    // após suspensão, mudança de fuso horário ou ajuste manual da hora
+    this._wallClock = new GnomeDesktop.WallClock();
+    this._wallClockId = this._wallClock.connect("notify::clock", () => {
       this._updateClock();
-      return GLib.SOURCE_CONTINUE;
     });
   }
 
@@ -249,89 +247,98 @@ export default class MondClockExtension extends Extension {
     let widgetStartX = 0;
     let widgetStartY = 0;
     let lastClickTime = 0;
+    this._containerSignals = [];
 
     // Clique para iniciar arraste (Drag) ou Duplo clique para configurações
-    this._container.connect("button-press-event", (actor, event) => {
-      const button = event.get_button();
-      if (button !== 1) return Clutter.EVENT_PROPAGATE;
+    this._containerSignals.push(
+      this._container.connect("button-press-event", (actor, event) => {
+        const button = event.get_button();
+        if (button !== 1) return Clutter.EVENT_PROPAGATE;
 
-      const clickTime = event.get_time();
+        const clickTime = event.get_time();
 
-      // Duplo clique com botão esquerdo abre as preferências (< 350ms)
-      if (clickTime - lastClickTime < 350) {
-        lastClickTime = 0;
-        this._cleanupDrag(actor);
-        this.openPreferences();
+        // Duplo clique com botão esquerdo abre as preferências (< 350ms)
+        if (clickTime - lastClickTime < 350) {
+          lastClickTime = 0;
+          this._cleanupDrag(actor);
+          this.openPreferences();
+          return Clutter.EVENT_STOP;
+        }
+        lastClickTime = clickTime;
+
+        // Se a posição estiver travada nas configurações, ignora o arraste
+        if (this._settings.get_boolean("lock-position")) {
+          return Clutter.EVENT_PROPAGATE;
+        }
+
+        this._isDragging = true;
+        const [stageX, stageY] = event.get_coords();
+        dragStartX = stageX;
+        dragStartY = stageY;
+        [widgetStartX, widgetStartY] = actor.get_position();
+
+        try {
+          this._dragGrab = global.stage.grab(actor);
+        } catch (e) {
+          this._dragGrab = null;
+        }
+
+        try {
+          global.display.set_cursor(Meta.Cursor.MOVE);
+        } catch (e) {}
+
         return Clutter.EVENT_STOP;
-      }
-      lastClickTime = clickTime;
-
-      // Se a posição estiver travada nas configurações, ignora o arraste
-      if (this._settings.get_boolean("lock-position")) {
-        return Clutter.EVENT_PROPAGATE;
-      }
-
-      this._isDragging = true;
-      const [stageX, stageY] = event.get_coords();
-      dragStartX = stageX;
-      dragStartY = stageY;
-      [widgetStartX, widgetStartY] = actor.get_position();
-
-      try {
-        this._dragGrab = global.stage.grab(actor);
-      } catch (e) {
-        this._dragGrab = null;
-      }
-
-      try {
-        global.display.set_cursor(Meta.Cursor.MOVE);
-      } catch (e) {}
-
-      return Clutter.EVENT_STOP;
-    });
+      }),
+    );
 
     // Movimento do mouse ao arrastar
-    this._container.connect("motion-event", (actor, event) => {
-      if (this._isDragging) {
-        const [stageX, stageY] = event.get_coords();
-        const deltaX = stageX - dragStartX;
-        const deltaY = stageY - dragStartY;
-        actor.set_position(widgetStartX + deltaX, widgetStartY + deltaY);
-        return Clutter.EVENT_STOP;
-      }
-      return Clutter.EVENT_PROPAGATE;
-    });
+    this._containerSignals.push(
+      this._container.connect("motion-event", (actor, event) => {
+        if (this._isDragging) {
+          const [stageX, stageY] = event.get_coords();
+          const deltaX = stageX - dragStartX;
+          const deltaY = stageY - dragStartY;
+          actor.set_position(widgetStartX + deltaX, widgetStartY + deltaY);
+          return Clutter.EVENT_STOP;
+        }
+        return Clutter.EVENT_PROPAGATE;
+      }),
+    );
 
     // Soltar o mouse: finaliza o arraste e grava as coordenadas finais no GSettings
-    this._container.connect("button-release-event", (actor, event) => {
-      if (this._isDragging && event.get_button() === 1) {
-        const [finalX, finalY] = actor.get_position();
-        this._cleanupDrag(actor);
-        this._settings.set_double("pos-x", finalX);
-        this._settings.set_double("pos-y", finalY);
-        return Clutter.EVENT_STOP;
-      }
-      return Clutter.EVENT_PROPAGATE;
-    });
+    this._containerSignals.push(
+      this._container.connect("button-release-event", (actor, event) => {
+        if (this._isDragging && event.get_button() === 1) {
+          const [finalX, finalY] = actor.get_position();
+          this._cleanupDrag(actor);
+          this._settings.set_double("pos-x", finalX);
+          this._settings.set_double("pos-y", finalY);
+          return Clutter.EVENT_STOP;
+        }
+        return Clutter.EVENT_PROPAGATE;
+      }),
+    );
 
     // Roda do mouse (Scroll) para alterar a Escala (Zoom)
-    this._container.connect("scroll-event", (actor, event) => {
-      const direction = event.get_scroll_direction();
-      let currentScale = this._settings.get_double("scale");
-      const step = 0.05;
+    this._containerSignals.push(
+      this._container.connect("scroll-event", (actor, event) => {
+        const direction = event.get_scroll_direction();
+        let currentScale = this._settings.get_double("scale");
+        const step = 0.05;
 
-      if (direction === Clutter.ScrollDirection.UP) {
-        currentScale = Math.min(currentScale + step, 3.0);
-      } else if (direction === Clutter.ScrollDirection.DOWN) {
-        currentScale = Math.max(currentScale - step, 0.4);
-      } else {
-        return Clutter.EVENT_PROPAGATE;
-      }
+        if (direction === Clutter.ScrollDirection.UP) {
+          currentScale = Math.min(currentScale + step, 3.0);
+        } else if (direction === Clutter.ScrollDirection.DOWN) {
+          currentScale = Math.max(currentScale - step, 0.4);
+        } else {
+          return Clutter.EVENT_PROPAGATE;
+        }
 
-      currentScale = Math.round(currentScale * 100) / 100;
-      this._settings.set_double("scale", currentScale);
-      return Clutter.EVENT_STOP;
-    });
+        currentScale = Math.round(currentScale * 100) / 100;
+        this._settings.set_double("scale", currentScale);
+        return Clutter.EVENT_STOP;
+      }),
+    );
   }
 
   _cleanupDrag(actor) {
@@ -348,9 +355,10 @@ export default class MondClockExtension extends Extension {
   }
 
   disable() {
-    if (this._timerId) {
-      GLib.source_remove(this._timerId);
-      this._timerId = null;
+    if (this._wallClock) {
+      this._wallClock.disconnect(this._wallClockId);
+      this._wallClockId = null;
+      this._wallClock = null;
     }
 
     if (this._settingsSignals && this._settings) {
@@ -363,21 +371,21 @@ export default class MondClockExtension extends Extension {
     this._cleanupDrag(this._container);
 
     if (this._container) {
+      if (this._containerSignals) {
+        for (const id of this._containerSignals) {
+          this._container.disconnect(id);
+        }
+        this._containerSignals = [];
+      }
+      // destroy() do contêiner também destrói os rótulos filhos
       this._container.destroy();
-      this._container.disconnect(this._container);
       this._container = null;
     }
 
-    this._labelDay?.destroy();
     this._labelDay = null;
-
-    this._labelDate?.destroy();
     this._labelDate = null;
-
-    this._labelTime?.destroy();
     this._labelTime = null;
 
-    this._settings?.destroy();
     this._settings = null;
   }
 }
